@@ -18,20 +18,55 @@ class WordCountAndTimePlugin {
     
     // Configuraciones en la DB (Campos demas)
     function settings() {
+
+        // TEMPLATE:
         // add_settings_section( id, title, callback, page )
-        add_settings_section( 'wpc_first_section', null, null, 'word-count-settings-page');
         // add_settings_field( id, title, callback, page, section, args )
-        add_settings_field( 'wpc_location', 'Display Location', array($this, 'locationHTML'), 'word-count-settings-page', 'wpc_first_section');
         // register_setting( option_group, option_name, sanitize_callback )
-        register_setting( 'wordcountplugin', 'wpc_location', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0'));
+
+        add_settings_section( 'wcp_first_section', null, null, 'word-count-settings-page');
+        // location
+        add_settings_field( 'wcp_location', 'Display Location', array($this, 'locationHTML'), 'word-count-settings-page', 'wcp_first_section');
+        register_setting( 'wordcountplugin', 'wcp_location', array('sanitize_callback' => 'sanitize_text_field', 'default' => '0'));
+        // headline
+        add_settings_field( 'wcp_headline', 'Headlines Text', array($this, 'headlineHTML'), 'word-count-settings-page', 'wcp_first_section');
+        register_setting( 'wordcountplugin', 'wcp_headline', array('sanitize_callback' => 'sanitize_text_field', 'default' => 'Post Stadistics'));
+        // wordcount
+        add_settings_field( 'wcp_wordcount', 'Word Count', array($this, 'wordcountHTML'), 'word-count-settings-page', 'wcp_first_section');
+        register_setting( 'wordcountplugin', 'wcp_wordcount', array('sanitize_callback' => 'sanitize_text_field', 'default' => '1'));
+        // 
+        add_settings_field( 'wcp_charactercount', 'Character Cunt', array($this, 'charactercountHTML'), 'word-count-settings-page', 'wcp_first_section');
+        register_setting( 'wordcountplugin', 'wcp_charactercount', array('sanitize_callback' => 'sanitize_text_field', 'default' => '1'));
+        // 
+        add_settings_field( 'wcp_readtime', 'Read Time', array($this, 'readtimeHTML'), 'word-count-settings-page', 'wcp_first_section');
+        register_setting( 'wordcountplugin', 'wcp_readtime', array('sanitize_callback' => 'sanitize_text_field', 'default' => '1'));
     }
 
-    // Mierdas del formulario
+    // Formulario (wcp_location)
     function locationHTML() {?>
-        <select name="wpc_location">
-            <option value="0">Begining of post</option>
-            <option value="1">End of post</option>
+        <select name="wcp_location">
+            <option value="0" <?php selected( get_option( 'wcp_location' ), '0' ) ?>>Begining of post</option>
+            <option value="1" <?php selected( get_option( 'wcp_location' ), '1' ) ?>>End of post</option>
         </select>
+    <?php }
+
+    // Formulario (wcp_headlines)
+    function headlineHTML() {?>
+        <input type="text" name="wcp_headline" value="<?php echo esc_attr( get_option( 'wcp_headline' ) ) ?>">
+    <?php }
+
+    // Formulario (wcp_wordcount)
+    function wordcountHTML() {?>
+        <input type="checkbox" name="wcp_wordcount" value='1' <?php checked(get_option('wcp_wordcount'), '1') ?>>
+    <?php }
+
+    // 
+    function charactercountHTML() {?>
+        <input type="checkbox" name="wcp_charactercount" value='1' <?php checked(get_option('wcp_charactercount'), '1') ?>>
+    <?php }
+    // 
+    function readtimeHTML() {?>
+        <input type="checkbox" name="wcp_readtime" value='1' <?php checked(get_option('wcp_readtime'), '1') ?>>
     <?php }
     
 
