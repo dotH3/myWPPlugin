@@ -1,7 +1,7 @@
 <?php
 
 /*
-    Plugin Name: MyWPPlugin
+    Plugin Name: WordCount
     Description: This is my personal plugin
     Version: 1.0
     Author: JB
