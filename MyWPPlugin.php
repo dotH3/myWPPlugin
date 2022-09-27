@@ -16,11 +16,11 @@ class WordCountAndTimePlugin {
         add_action( 'admin_menu', array($this, 'adminPage'));
         add_action('admin_init', array($this, 'settings'));
         add_filter('the_content', array($this, 'isWrap'));
-        add_action('init', array($this, 'languages'));
+        // add_action('init', array($this, 'languages'));
     }
 
     function language(){
-        load_plugin_textdomain( 'wcpdomain', false, dirname(plugin_basename( __FILE__ )) . '/languages' );
+        // load_plugin_textdomain( 'wcpdomain', false, dirname(plugin_basename( __FILE__ )) . '/languages' );
     }
 
     function isWrap($content) {
