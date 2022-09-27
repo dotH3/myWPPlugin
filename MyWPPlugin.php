@@ -6,6 +6,8 @@
     Version: 1.0
     Author: JB
     Author URI: https://pornhub.com
+    Text Domain: wcpdomain
+    Domain Path: /languages
 */
 
 class WordCountAndTimePlugin {
@@ -14,6 +16,11 @@ class WordCountAndTimePlugin {
         add_action( 'admin_menu', array($this, 'adminPage'));
         add_action('admin_init', array($this, 'settings'));
         add_filter('the_content', array($this, 'isWrap'));
+        add_action('init', array($this, 'languages'));
+    }
+
+    function language(){
+        load_plugin_textdomain( 'wcpdomain', false, dirname(plugin_basename( __FILE__ )) . '/languages' );
     }
 
     function isWrap($content) {
@@ -30,17 +37,27 @@ class WordCountAndTimePlugin {
     function createHTML($content) {
         $html = '<h3>' . esc_html(get_option( 'wcp_headline', 'Post Stadistics' )) . '</h3><p>';
         
-        
         if(get_option( 'wcp_wordcount', '1' ) OR get_option( 'wcp_wordcount', '1' )){$wordCount = str_word_count(strip_tags($content));}
-        if(get_option( 'wcp_wordcount', '1' )) {$html .= 'Este post tiene ' . $wordCount . ' palabras. <br>';}
-        if(get_option( 'wcp_charactercount', '1' )) {$html .= 'Este post tiene ' . strlen(strip_tags($content)) . ' caracteres. <br>';}
-        if(get_option( 'wcp_readtime', '1' )) {$html .= 'Este post te tomara ' . round($wordCount/125) . ' minuto(s). <br>';}
+        
+        if(get_option( 'wcp_wordcount', '1' )) {
+            $html .= __('Esta publicacion tiene', 'wcpdomain') . ' ' . $wordCount . ' palabras. <br>';
+        }
+        if(get_option( 'wcp_charactercount', '1' )) {
+            $html .= 'Esta publicacion tiene' . ' ' . strlen(strip_tags($content)) . ' caracteres. <br>';
+        }
+        if(get_option( 'wcp_readtime', '1' )) {
+            $html .= 'Esta publicacion te tomara' . ' ' . round($wordCount/125) . ' minuto(s). <br>';
+        }
 
         $html .= '</p>';
 
         if(get_option( 'wcp_location', '0' ) == 0) {return $html . $content;}
         return $content . $html;
     }
+
+
+    //
+
     
     function settings() {
 
@@ -87,7 +104,6 @@ class WordCountAndTimePlugin {
         <input type="text" name="wcp_headline" value="<?php echo esc_attr( get_option( 'wcp_headline' ) ) ?>">
     <?php }
 
-
     function checkboxHTML($args) { ?>
         <input type="checkbox" name="<?php echo $args['theName'] ?>" value='1' <?php checked(get_option($args['theName']), '1') ?>
     <?php }
@@ -97,7 +113,7 @@ class WordCountAndTimePlugin {
 
     // Creamos la pagina de configuracion en el panel admin
     function adminPage() {    
-        add_options_page( 'Word Count Settings', 'Word Count', 'manage_options', 'word-count-settings-page', array($this, 'ourHTML'));
+        add_options_page( 'Word Count Settings', __('Word Count', 'wcpdomain'), 'manage_options', 'word-count-settings-page', array($this, 'ourHTML'));
     }
 
     // Esta es la pagina del panel admin
@@ -108,7 +124,6 @@ class WordCountAndTimePlugin {
              <?php
                 settings_fields( 'wordcountplugin' );
                 do_settings_sections( 'word-count-settings-page' );
-                // submit_button( text, type, name, wrap, other_attributes )
                 submit_button( )
              ?>
             </form>
