@@ -7,3 +7,15 @@
     height: 200px;
     margin-bottom: 50px;
 }
+
+
+
+
+.flex-container {
+    /* display: flex; */
+}
+
+.flex-container textarea {
+    /* flex: 1; */
+    min-width: 100%;
+}
