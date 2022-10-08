@@ -9,15 +9,26 @@
         function __construct() {
             add_action('admin_menu', array($this, 'adminMenu'));
             add_filter('the_content', array($this, 'myFilter'));
-            // add_filter('the_content', array($this, 'test'));
+            add_filter('the_content', array($this, 'myFilter'));
+
+            add_action( 'wp_enqueue_scripts', array($this, 'bootstrap_css'));
         }
 
         function myFilter($content) {
+            // return ;
             function output() {
-                echo ''?>
-                    <img src="<?php esc_attr( get_option() ) ?>" alt="">
-                    <p><? get_option(  ) ?></p>
-                <?php
+                ?>
+                    <script>
+                        const data = "<?php echo esc_textarea(get_option('plugin_carousel_img_list')) ?>";
+                        console.log(data);
+                    </script>
+
+                    <div>
+                        <h3>
+                            ok!
+                        </h3>
+                    </div>
+                <?php 
             }
             return output() . $content;
         }
@@ -26,20 +37,51 @@
             wp_enqueue_style( 'filterAdminCss', plugin_dir_url( __FILE__ ) . 'style.css');
         }
         
+        function bootstrap_css() {
+            wp_enqueue_style( 'bootstrap_css', 
+                              'https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css', 
+                              array(), 
+                              '4.1.3'
+                              ); 
+        }
+        
         function adminMenu() {
             $mainPageHook = add_menu_page( 'Custom Carousel Page', 'My Carousel', 'manage_options', 'custom-carousel', array($this, 'adminPageHTML'), 'dashicons-smiley', 100 );
             // Load CSS
             add_submenu_page( 'custom-carousel', 'Upload Image Page', 'Upload', 'manage_options', 'upload-img', array($this, 'adminSubPageHTML'));
             add_action("load-{$mainPageHook}", array($this, 'mainPageAssets'));
         }
+        
+        function handleForm() {
+            if (wp_verify_nonce($_POST['ourNonce'], 'plugin_carousel_img_list') AND current_user_can('manage_options')) {
+                update_option('plugin_carousel_img_list', sanitize_text_field($_POST['plugin_carousel_img_list'])); ?>
+                <div class="updated">
+                <p>Your filtered words were saved.</p>
+                </div>
+            <?php } else { ?>
+                <div class="error">
+                <p>Sorry, you do not have permission to perform that action.</p>
+                </div>
+            <?php } 
+        }
 
         function adminPageHTML() { ?>
             <div class="wrap">
                 <h1>My Custom Carousel</h1>
+                <?php 
+                    if($_POST['justsubmitted'] == 'true') {
+                        $this->handleForm();
+                    } 
+                ?>
                 <form method="POST">
-                    <label for="plugin_carousel_img_text">Link de las imagenes a ocupar en el carousel. <strong>Separados por una "," (COMA)</strong></label>
+                    <input type="hidden" name="justsubmitted" value="true">
+                    <?php 
+                        // wp_nonce_field( action, name, referer, echo )
+                        wp_nonce_field('plugin_carousel_img_list', 'ourNonce') 
+                    ?>
+                    <label for="plugin_carousel_img_list">Link de las imagenes a ocupar en el carousel. <strong>Separados por una "," (COMA)</strong></label>
                     <div class="flex-container">
-                        <textarea name="plugin_carousel_img_text" id="plugin_carousel_img_text"><?php echo esc_textarea(get_option('plugin_carousel_img_text')) ?></textarea>
+                        <textarea name="plugin_carousel_img_list" id="plugin_carousel_img_list"><?php echo esc_textarea(get_option('plugin_carousel_img_list')) ?></textarea>
                     </div>
                     <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
                 </form>
