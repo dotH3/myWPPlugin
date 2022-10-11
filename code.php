@@ -18,14 +18,25 @@
             // return ;
             function output() {
                 ?>
-                    <script>
-                        const data = "<?php echo esc_textarea(get_option('plugin_carousel_img_list')) ?>";
-                        console.log(data);
+                    <script>    
+                        window.onload = ()=>{
+                            const data = "<?php echo esc_textarea(get_option('plugin_carousel_img_list')) ?>";
+                            const rest = data.split(',');
+                            console.log(rest);
+                            rest.forEach(el => {
+                                const element = document.createElement('img');
+                                const list = document.getElementById('h3');
+                                element.src = el;
+                                list.appendChild(element);
+                                // console.log(el)
+                            });
+                        }
+
                     </script>
 
-                    <div>
+                    <div id='h3'>
                         <h3>
-                            ok!
+                            Plugin is running!
                         </h3>
                     </div>
                 <?php 
