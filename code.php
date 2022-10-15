@@ -11,33 +11,57 @@
             add_filter('the_content', array($this, 'myFilter'));
             add_filter('the_content', array($this, 'myFilter'));
 
-            add_action( 'wp_enqueue_scripts', array($this, 'bootstrap_css'));
+            // add_action( 'wp_enqueue_scripts', array($this, 'bootstrap'));
         }
 
         function myFilter($content) {
             // return ;
             function output() {
                 ?>
+                    <!-- CSS only -->
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+                    <!-- JavaScript Bundle with Popper -->
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+                    
                     <script>    
                         window.onload = ()=>{
                             const data = "<?php echo esc_textarea(get_option('plugin_carousel_img_list')) ?>";
                             const rest = data.split(',');
                             console.log(rest);
                             rest.forEach(el => {
-                                const element = document.createElement('img');
-                                const list = document.getElementById('h3');
-                                element.src = el;
-                                list.appendChild(element);
-                                // console.log(el)
+                                const list = document.getElementById('imH3');
+                                const contenedor = document.createElement('div');
+                                contenedor.classList.add('carousel-item', 'active');
+                                contenedor.innerHTML = `<img class="d-block w-100" src="${el}"></img>`
+                                list.appendChild(contenedor);
                             });
                         }
 
                     </script>
 
-                    <div id='h3'>
-                        <h3>
-                            Plugin is running!
-                        </h3>
+                    <h3>Plugin is running!</h3>
+                    <div>
+                        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner" id="imH3">
+                                <!-- <div class="carousel-item active">
+                                <img src="https://via.placeholder.com/300.png/09f/fff" class="d-block w-100" alt="...">
+                                </div>
+                                <div class="carousel-item">
+                                <img src="https://via.placeholder.com/300.png/09f/fff" class="d-block w-100" alt="...">
+                                </div>
+                                <div class="carousel-item">
+                                <img src="https://via.placeholder.com/300.png/09f/fff" class="d-block w-100" alt="...">
+                                </div> -->
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
                     </div>
                 <?php 
             }
@@ -48,12 +72,13 @@
             wp_enqueue_style( 'filterAdminCss', plugin_dir_url( __FILE__ ) . 'style.css');
         }
         
-        function bootstrap_css() {
+        function bootstrap() {
             wp_enqueue_style( 'bootstrap_css', 
                               'https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css', 
                               array(), 
                               '4.1.3'
                               ); 
+            wp_enqueue_script( 'bootstrap_js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js', array(), '1.1.1' );
         }
         
         function adminMenu() {
